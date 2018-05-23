@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Authentication;
+@model IEnumerable<ToolViewModel>
+@inject IOptions<Features> features
+@inject IAuthorizationService AuthorizationService
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+@if (features.Value.Diagnostics)
+{
+    <div class="row">
+        @{ 
+            var appUser = await UserManager.GetUserAsync(User);
+        }
+        @if (appUser != null && await UserManager.IsInRoleAsync(appUser, "Admin"))
+        {
+            <span>Is Admin</span>
+        }
+        else
+        {
+            <span>Is <strong>NOT</strong> Admin</span>
+        }
+    </div>
+    <div class="row">
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+        <div class="twelve columns">
+            Logged in as @UserManager.GetUserName(User)
+        </div>
+        }
+        else
+        {
+        <div class="twelve columns">
+            Not logged in.
+        </div>
+        }
+    </div>
+    <div class="row">
+        <table class="u-full-width">
+            <tbody>
+                @foreach (var claim in User.Claims)
+                {
+                    <tr>
+                        <td><strong> @claim.Type </strong></td>
+                        <td> @claim.Value </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<div class="row">
+    @if (!User?.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="twelve columns">
+            You must log in to access the tools
+        </div>
+    }
+    else
+    {
+        //foreach (var tool in Model)
+        //{
+        //    await Html.RenderPartialAsync("_ToolPartial", tool);
+        //}
+    }
+</div>

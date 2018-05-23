@@ -1,0 +1,32 @@
+{
+  "name": "CTG App",
+  "short_name": "CTG App",
+  "start_url": "/",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "orientation": "portrait",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "images/logo-96x96.jpg",
+      "sizes": "96x96",
+      "type": "image/jpg"
+    },
+    {
+      "src": "images/logo-144x144.jpg",
+      "sizes": "144x144",
+      "type": "image/jpg"
+    },
+    {
+      "src": "images/logo-256x256.jpg",
+      "sizes": "256x256",
+      "type": "image/jpg"
+    },
+    {
+      "src": "images/logo-512x512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+
+  ]
+}

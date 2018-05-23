@@ -1,0 +1,200 @@
+﻿@*@inject IAuthorizationService AuthorizationService*@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CTG App</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <environment include="Development">
+        <link href="~/css/skeleton.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+              asp-fallback-href="~/css/skeleton.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+    <link href="https://unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet" />
+    <link rel="manifest" href="~/manifest.json">
+    <meta name="theme-color" content="#fff" />
+
+    @if (ViewBag.HasVideo ?? false)
+    {
+        <link href="//amp.azure.net/libs/amp/latest/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+        <script src="//amp.azure.net/libs/amp/latest/azuremediaplayer.min.js"></script>
+    }
+
+    @if (ViewBag.HasWysiwyg ?? false)
+    {
+
+    }
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="seven columns center">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">
+                    <img class="u-full-width" src="~/images/logo.png" alt="Main logo" />
+                    <span class="sr-only">Home</span>
+                </a>
+            </div>
+            <div class="five columns center">
+                <img class="u-pull-right u-max-full-width side-logo" src="~/images/side-logo.jpg" alt="Right hand logo" />
+                <span class="u-cf"></span>
+                <span class="u-pull-right phone-number"><i class="material-icons">phone</i> <span>0800 0563661</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="container band navigation">
+        <nav class="primary">
+            <div class="twelve columns">
+                <ul>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    @{
+                        var manageUsers = AuthorizationResult.Failed(); // await AuthorizationService.AuthorizeAsync(User, Permissions.ManageUsers);
+                        var manageRoles = AuthorizationResult.Failed(); ; //await AuthorizationService.AuthorizeAsync(User, Permissions.ManageRoles);
+                        var manageTools = AuthorizationResult.Failed(); ; //await AuthorizationService.AuthorizeAsync(User, Permissions.ManageTools);
+                        var manageMedia = AuthorizationResult.Failed(); ; //await AuthorizationService.AuthorizeAsync(User, Permissions.ManageMedia);
+                        var makeTestChanges = AuthorizationResult.Failed(); ; //await AuthorizationService.AuthorizeAsync(User, Permissions.MakeTestChanges);
+                        var adminItems = new AuthorizationResult[] { manageUsers, manageRoles, manageTools, manageMedia };
+                        var showAdmin = adminItems.Any(a => a.Succeeded);
+                    }
+                    @if (showAdmin)
+                    {
+
+                        <li menu-trigger" data-menu="#adminMenu">
+                            <a href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
+                            <ul id="adminMenu">
+                                @if (manageUsers.Succeeded)
+                                {
+                                    <li><a asp-area="" asp-controller="Users" asp-action="Index"><span class="nest">- </span>Users</a></li>
+                                }
+                                @if (manageRoles.Succeeded)
+                                {
+                                    <li><a asp-area="" asp-controller="Roles" asp-action="Index"><span class="nest">- </span>Roles</a></li>
+                                }
+                                @if (manageTools.Succeeded)
+                                {
+                                    <li><a asp-area="" asp-controller="Tools" asp-action="Index"><span class="nest">- </span>Tools</a></li>
+                                }
+                                @if (manageMedia.Succeeded)
+                                {
+                                    <li><a asp-action="Index" asp-controller="Locators"><span class="nest">- </span>Media Locators</a></li>
+                                    <li><a asp-action="Index" asp-controller="AccessPolicies"><span class="nest">- </span>Media Access Policies</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    @*@await Component.InvokeAsync("ToolsMenu")*@
+                </ul>
+                @{
+                    var manageReports = AuthorizationResult.Failed(); // await AuthorizationService.AuthorizeAsync(User, Permissions.ManageReports);
+                    if (manageReports.Succeeded)
+                    {
+                        <span>
+                            <a asp-action="Index" asp-controller="Reports">Reports</a>
+                        </span>
+                    }
+                }
+                @if (makeTestChanges.Succeeded)
+                {
+                    <span>
+                        <a asp-action="Index" asp-controller="Testing">Test</a>
+                    </span>
+                }
+                <span class="separator"></span>
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+    </div>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <div class="footer">
+        <div class="container">
+            <footer>
+                <p>&copy; 2018 - CTG App</p>
+            </footer>
+        </div>
+    </div>
+
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/menu.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/menu.min.js" asp-append-version="true"></script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                // Use the window load event to keep the page load performant
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js');
+                })
+            }
+        </script>
+    </environment>
+
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <script>
+        $(document).ajaxStart(function () {
+            NProgress.start();
+        });
+        $(document).ajaxStop(function () {
+            NProgress.done();
+        });
+
+        $(document).ready(function () {
+            // Create the dropdown base
+            $("<select />").appendTo("nav");
+
+            // Create default option "Go to..."
+            $("<option />", {
+                "selected": "selected",
+                "value": "",
+                "text": "Go to..."
+            }).appendTo("nav select");
+
+            // Populate dropdown with menu items
+            $("nav a").each(function () {
+                var el = $(this);
+                //const href = el.attr("href");
+                //if (!(href === '' || href === '#')) {
+                $("<option />", {
+                    "value": el.attr("href"),
+                    "text": el.text()
+                }).appendTo("nav select");
+                //}
+            });
+
+            $("nav select").change(function () {
+                window.location = $(this).find("option:selected").val();
+            });
+        })
+    </script>
+
+    @if (ViewBag.HasWysiwyg ?? false)
+    {
+        @*<script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>*@
+        <script src="//cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+    }
+    @*@if (ViewBag.HasInlineWysiwyg ?? false)
+        {
+            <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/inline/ckeditor.js"></script>
+            <script src="//cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+        }*@
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
